@@ -33,13 +33,12 @@ public class QuizActivity extends AppCompatActivity {
 
         mQuestionTextView = (TextView) findViewById(R.id.question_text_view);
 
-
         mTrueButton = (Button) findViewById(R.id.true_button);
         mTrueButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v){
                Toast toast =  Toast.makeText(QuizActivity.this, R.string.correct_toast,Toast.LENGTH_SHORT);
-               toast.setGravity(Gravity.TOP, 0, 0);
+               // toast.setGravity(Gravity.TOP, 0, 0);
                toast.show();
             }
         });
@@ -51,5 +50,19 @@ public class QuizActivity extends AppCompatActivity {
                 Toast.makeText(QuizActivity.this, R.string.incorrect_toast, Toast.LENGTH_SHORT).show();
             }
         });
+
+        mNextButton = (Button) findViewById(R.id.next_button);
+        mNextButton.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v){
+                mCurrentIndex = (mCurrentIndex + 1) % mQuestionBank.length;
+                updateQuestion();
+            }
+        });
+        updateQuestion();
+    }
+    private void updateQuestion(){
+        int question = mQuestionBank[mCurrentIndex].getTextResId();
+        mQuestionTextView.setText(question);
     }
 }
