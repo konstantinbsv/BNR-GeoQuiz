@@ -15,6 +15,8 @@ public class QuizActivity extends AppCompatActivity {
     private Button mNextButton;
     private TextView mQuestionTextView;
 
+    private boolean userPressedTrue;
+
     private Question[] mQuestionBank = new Question[]{
         new Question(R.string.question_australia, true),
         new Question(R.string.question_oceans, true),
@@ -37,9 +39,7 @@ public class QuizActivity extends AppCompatActivity {
         mTrueButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v){
-               Toast toast =  Toast.makeText(QuizActivity.this, R.string.correct_toast,Toast.LENGTH_SHORT);
-               // toast.setGravity(Gravity.TOP, 0, 0);
-               toast.show();
+               checkAnswer(true);
             }
         });
 
@@ -47,7 +47,7 @@ public class QuizActivity extends AppCompatActivity {
         mFalseButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v){
-                Toast.makeText(QuizActivity.this, R.string.incorrect_toast, Toast.LENGTH_SHORT).show();
+                checkAnswer(false);
             }
         });
 
@@ -64,5 +64,16 @@ public class QuizActivity extends AppCompatActivity {
     private void updateQuestion(){
         int question = mQuestionBank[mCurrentIndex].getTextResId();
         mQuestionTextView.setText(question);
+    }
+
+    private void checkAnswer(boolean userPressedTrue){
+        if (userPressedTrue == mQuestionBank[mCurrentIndex].isAnswerTrue()){
+            Toast toast =  Toast.makeText(QuizActivity.this, R.string.correct_toast,Toast.LENGTH_SHORT);
+            // toast.setGravity(Gravity.TOP, 0, 0); //Ch 1 - Challenge 1
+            toast.show();
+        }
+        else{
+            Toast.makeText(QuizActivity.this, R.string.incorrect_toast, Toast.LENGTH_SHORT).show();
+        }
     }
 }
