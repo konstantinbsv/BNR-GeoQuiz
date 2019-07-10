@@ -10,6 +10,8 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 
+import java.util.Locale;
+
 public class QuizActivity extends AppCompatActivity {
 
     private static final String TAG = "QuizActivity";
@@ -31,7 +33,9 @@ public class QuizActivity extends AppCompatActivity {
     };
 
     private int mCurrentIndex = 0;
-    private boolean[] alreadyAnswered = new boolean[mQuestionBank.length];
+    private int mAnsweredCorrect = 0;
+    private int mAnsweredIncorrect = 0;
+    private boolean[] mAlreadyAnswered = new boolean[mQuestionBank.length];
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -133,18 +137,25 @@ public class QuizActivity extends AppCompatActivity {
     }
 
     private void checkAnswer(boolean userPressedTrue){
-        if(alreadyAnswered[mCurrentIndex] == false) {
+        if(mAlreadyAnswered[mCurrentIndex] == false) {
             if (userPressedTrue == mQuestionBank[mCurrentIndex].isAnswerTrue()) {
                 Toast toast = Toast.makeText(QuizActivity.this, R.string.correct_toast, Toast.LENGTH_SHORT);
                 // toast.setGravity(Gravity.TOP, 0, 0); //Ch 1 - Challenge 1
                 toast.show();
+                mAnsweredCorrect ++;
             } else {
                 Toast.makeText(QuizActivity.this, R.string.incorrect_toast, Toast.LENGTH_SHORT).show();
+                mAnsweredIncorrect ++;
             }
-            alreadyAnswered[mCurrentIndex] = true;
+            mAlreadyAnswered[mCurrentIndex] = true;
         }
         else{
             Toast.makeText(QuizActivity.this, R.string.already_answered, Toast.LENGTH_SHORT).show();
+        }
+        if(mAnsweredCorrect + mAnsweredIncorrect == mQuestionBank.length){
+            float mPercentCorrect = (float) mAnsweredCorrect / mQuestionBank.length * 100;
+            String mScore = getResources().getString(R.string.quiz_result) + String.format(Locale.getDefault(), " %.2f%%", mPercentCorrect);
+            Toast.makeText(QuizActivity.this, mScore, Toast.LENGTH_LONG).show();
         }
     }
 }

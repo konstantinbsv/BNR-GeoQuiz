@@ -17,4 +17,5 @@
     <string name="already_answered">You already answered.</string>
     <string name="next_button_cD">Next</string>
     <string name="prev_button_cD">Previous</string>
+    <string name="quiz_result">Congratulations! Your score is: </string>
 </resources>
