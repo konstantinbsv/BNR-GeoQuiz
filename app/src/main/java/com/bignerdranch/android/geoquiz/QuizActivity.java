@@ -31,6 +31,7 @@ public class QuizActivity extends AppCompatActivity {
     };
 
     private int mCurrentIndex = 0;
+    private boolean[] alreadyAnswered = new boolean[mQuestionBank.length];
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -126,18 +127,24 @@ public class QuizActivity extends AppCompatActivity {
     }
 
     private void updateQuestion(){
+
         int question = mQuestionBank[mCurrentIndex].getTextResId();
         mQuestionTextView.setText(question);
     }
 
     private void checkAnswer(boolean userPressedTrue){
-        if (userPressedTrue == mQuestionBank[mCurrentIndex].isAnswerTrue()){
-            Toast toast =  Toast.makeText(QuizActivity.this, R.string.correct_toast,Toast.LENGTH_SHORT);
-            // toast.setGravity(Gravity.TOP, 0, 0); //Ch 1 - Challenge 1
-            toast.show();
+        if(alreadyAnswered[mCurrentIndex] == false) {
+            if (userPressedTrue == mQuestionBank[mCurrentIndex].isAnswerTrue()) {
+                Toast toast = Toast.makeText(QuizActivity.this, R.string.correct_toast, Toast.LENGTH_SHORT);
+                // toast.setGravity(Gravity.TOP, 0, 0); //Ch 1 - Challenge 1
+                toast.show();
+            } else {
+                Toast.makeText(QuizActivity.this, R.string.incorrect_toast, Toast.LENGTH_SHORT).show();
+            }
+            alreadyAnswered[mCurrentIndex] = true;
         }
         else{
-            Toast.makeText(QuizActivity.this, R.string.incorrect_toast, Toast.LENGTH_SHORT).show();
+            Toast.makeText(QuizActivity.this, R.string.already_answered, Toast.LENGTH_SHORT).show();
         }
     }
 }

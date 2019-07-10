@@ -14,6 +14,7 @@
     <!--<string name="prev_button">Prev</string>-->
     <string name="correct_toast">Correct!</string>
     <string name="incorrect_toast">Incorrect!</string>
+    <string name="already_answered">You already answered.</string>
     <string name="next_button_cD">Next</string>
     <string name="prev_button_cD">Previous</string>
 </resources>
