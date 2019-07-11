@@ -16,7 +16,13 @@ import java.util.Locale;
 public class QuizActivity extends AppCompatActivity {
 
     private static final String TAG = "QuizActivity";
+    //Bundle save keys
     private static final String KEY_INDEX = "index";
+    private static final String KEY_ANS_CORRECT = "answered_correct";
+    private static final String KEY_ANS_INCORRECT = "answered_incorrect";
+    private static final String KEY_CHEATED_ON = "cheated_on";
+    private static final String KEY_ALREADY_ANSWERED = "already_answered";
+
     private static final int REQUEST_CODE_CHEAT = 0;
 
     private Button mTrueButton;
@@ -40,6 +46,7 @@ public class QuizActivity extends AppCompatActivity {
     private int mAnsweredCorrect = 0;
     private int mAnsweredIncorrect = 0;
     private boolean[] mAlreadyAnswered = new boolean[mQuestionBank.length];
+    private boolean[] mCheatedOn = new boolean[mQuestionBank.length];
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,8 +54,13 @@ public class QuizActivity extends AppCompatActivity {
         Log.d(TAG, "onCreate(Bundle) called");
         setContentView(R.layout.activity_quiz);
 
+        //If saved instance exists get values from it
         if (savedInstanceState != null){
             mCurrentIndex = savedInstanceState.getInt(KEY_INDEX, 0);
+            mAnsweredCorrect = savedInstanceState.getInt(KEY_ANS_CORRECT, 0);
+            mAnsweredIncorrect = savedInstanceState.getInt(KEY_ANS_INCORRECT, 0);
+            mAlreadyAnswered = savedInstanceState.getBooleanArray(KEY_ALREADY_ANSWERED);
+            mCheatedOn = savedInstanceState.getBooleanArray(KEY_CHEATED_ON);
         }
 
         mQuestionTextView = (TextView) findViewById(R.id.question_text_view);
@@ -102,9 +114,14 @@ public class QuizActivity extends AppCompatActivity {
             @Override
             public void onClick(View v){
                 //Start CheatActivity
-                boolean answerIsTrue = mQuestionBank[mCurrentIndex].isAnswerTrue();
-                Intent intent = CheatActivity.newIntent(QuizActivity.this, answerIsTrue);
-                startActivityForResult(intent, REQUEST_CODE_CHEAT);
+                if(mAlreadyAnswered[mCurrentIndex]){
+                    Toast.makeText(QuizActivity.this, R.string.already_answered, Toast.LENGTH_SHORT).show();
+                }
+                else {
+                    boolean answerIsTrue = mQuestionBank[mCurrentIndex].isAnswerTrue();
+                    Intent intent = CheatActivity.newIntent(QuizActivity.this, answerIsTrue);
+                    startActivityForResult(intent, REQUEST_CODE_CHEAT);
+                }
             }
         });
     }
@@ -132,6 +149,10 @@ public class QuizActivity extends AppCompatActivity {
         super.onSaveInstanceState(savedInstanceState);   //call superclass method. Mandatory
         Log.i(TAG, "onSaveInstanceState");          //.i priority constant INFO
         savedInstanceState.putInt(KEY_INDEX, mCurrentIndex);
+        savedInstanceState.putInt(KEY_ANS_CORRECT, mAnsweredCorrect);
+        savedInstanceState.putInt(KEY_ANS_INCORRECT, mAnsweredIncorrect);
+        savedInstanceState.putBooleanArray(KEY_ALREADY_ANSWERED, mAlreadyAnswered);
+        savedInstanceState.putBooleanArray(KEY_CHEATED_ON, mCheatedOn);
     }
 
     @Override public void onStop(){
@@ -153,7 +174,7 @@ public class QuizActivity extends AppCompatActivity {
     }
 
     private void checkAnswer(boolean userPressedTrue){
-        if(mIsCheater){
+        if(mCheatedOn[mCurrentIndex]){
             Toast.makeText(QuizActivity.this, R.string.judgment_toast, Toast.LENGTH_LONG).show();
         }
         else if(!mAlreadyAnswered[mCurrentIndex]) {
@@ -188,6 +209,13 @@ public class QuizActivity extends AppCompatActivity {
                 return;
             }
             mIsCheater = CheatActivity.wasAnswerShown(data);
+
+            //If cheated on question
+            if(mIsCheater){
+                mCheatedOn[mCurrentIndex] = true;           //Remember question that was cheated on
+                mAlreadyAnswered[mCurrentIndex] = true;     //Set question as answered
+                mAnsweredIncorrect ++;                      //Increment incorrect answers
+            }
         }
     }
 }
