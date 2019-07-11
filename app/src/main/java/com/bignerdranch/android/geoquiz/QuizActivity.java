@@ -17,6 +17,7 @@ public class QuizActivity extends AppCompatActivity {
 
     private static final String TAG = "QuizActivity";
     private static final String KEY_INDEX = "index";
+    private static final int REQUEST_CODE_CHEAT = 0;
 
     private Button mTrueButton;
     private Button mFalseButton;
@@ -35,6 +36,7 @@ public class QuizActivity extends AppCompatActivity {
     };
 
     private int mCurrentIndex = 0;
+    private boolean mIsCheater;
     private int mAnsweredCorrect = 0;
     private int mAnsweredIncorrect = 0;
     private boolean[] mAlreadyAnswered = new boolean[mQuestionBank.length];
@@ -102,7 +104,7 @@ public class QuizActivity extends AppCompatActivity {
                 //Start CheatActivity
                 boolean answerIsTrue = mQuestionBank[mCurrentIndex].isAnswerTrue();
                 Intent intent = CheatActivity.newIntent(QuizActivity.this, answerIsTrue);
-                startActivity(intent);
+                startActivityForResult(intent, REQUEST_CODE_CHEAT);
             }
         });
     }
@@ -145,12 +147,16 @@ public class QuizActivity extends AppCompatActivity {
 
     private void updateQuestion(){
         // Log.d(TAG, "Updating question text", new Exception()); //Page 78
+        mIsCheater = false; //reset cheating on question change (update)
         int question = mQuestionBank[mCurrentIndex].getTextResId();
         mQuestionTextView.setText(question);
     }
 
     private void checkAnswer(boolean userPressedTrue){
-        if(!mAlreadyAnswered[mCurrentIndex]) {
+        if(mIsCheater){
+            Toast.makeText(QuizActivity.this, R.string.judgment_toast, Toast.LENGTH_LONG).show();
+        }
+        else if(!mAlreadyAnswered[mCurrentIndex]) {
             if (userPressedTrue == mQuestionBank[mCurrentIndex].isAnswerTrue()) {
                 Toast toast = Toast.makeText(QuizActivity.this, R.string.correct_toast, Toast.LENGTH_SHORT);
                 // toast.setGravity(Gravity.TOP, 0, 0); //Ch 1 - Challenge 1
@@ -169,6 +175,19 @@ public class QuizActivity extends AppCompatActivity {
             float mPercentCorrect = (float) mAnsweredCorrect / mQuestionBank.length * 100;
             String mScore = getResources().getString(R.string.quiz_result) + String.format(Locale.getDefault(), " %.2f%%", mPercentCorrect);
             Toast.makeText(QuizActivity.this, mScore, Toast.LENGTH_LONG).show();
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data){
+        if(resultCode != RESULT_OK){
+            return;
+        }
+        if(requestCode == REQUEST_CODE_CHEAT){
+            if (data == null){
+                return;
+            }
+            mIsCheater = CheatActivity.wasAnswerShown(data);
         }
     }
 }
