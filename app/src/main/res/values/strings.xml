@@ -17,5 +17,11 @@
     <string name="already_answered">You already answered.</string>
     <string name="next_button_cD">Next</string>
     <string name="prev_button_cD">Previous</string>
-    <string name="quiz_result">Congratulations! Your score is: </string>
+    <string name="quiz_result">Congratulations! Your score is:</string>
+
+    <string name="warning_text">Are you sure you want to do this?</string>
+    <string name="show_answer_button">Show Answer</string>
+    <string name="cheat_button">Cheat!</string>
+    <string name="judgment_toast">Cheating is wrong.</string>
+
 </resources>

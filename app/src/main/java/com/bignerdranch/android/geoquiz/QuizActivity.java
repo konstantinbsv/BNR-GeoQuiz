@@ -1,5 +1,6 @@
 package com.bignerdranch.android.geoquiz;
 
+import android.content.Intent;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
@@ -21,6 +22,7 @@ public class QuizActivity extends AppCompatActivity {
     private Button mFalseButton;
     private ImageButton mNextButton;
     private ImageButton mPrevButton;
+    private Button mCheatButton;
     private TextView mQuestionTextView;
 
     private Question[] mQuestionBank = new Question[]{
@@ -48,8 +50,9 @@ public class QuizActivity extends AppCompatActivity {
         }
 
         mQuestionTextView = (TextView) findViewById(R.id.question_text_view);
+        updateQuestion();
 
-        //Challenge 1
+        //Challenge 1 - Click on text for next question
         mQuestionTextView.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v){
@@ -82,7 +85,6 @@ public class QuizActivity extends AppCompatActivity {
                 updateQuestion();
             }
         });
-        updateQuestion();
 
         mPrevButton = findViewById(R.id.prev_button);
         mPrevButton.setOnClickListener(new View.OnClickListener(){
@@ -90,6 +92,16 @@ public class QuizActivity extends AppCompatActivity {
             public void onClick(View v){
                 mCurrentIndex = (mCurrentIndex + mQuestionBank.length -1) % mQuestionBank.length;
                 updateQuestion();
+            }
+        });
+
+        mCheatButton = (Button) findViewById(R.id.cheat_button);
+        mCheatButton.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v){
+                //Start CheatActivity
+                Intent intent = new Intent(QuizActivity.this, CheatActivity.class);
+                startActivity(intent);
             }
         });
     }
@@ -131,13 +143,13 @@ public class QuizActivity extends AppCompatActivity {
     }
 
     private void updateQuestion(){
-
+        // Log.d(TAG, "Updating question text", new Exception()); //Page 78
         int question = mQuestionBank[mCurrentIndex].getTextResId();
         mQuestionTextView.setText(question);
     }
 
     private void checkAnswer(boolean userPressedTrue){
-        if(mAlreadyAnswered[mCurrentIndex] == false) {
+        if(!mAlreadyAnswered[mCurrentIndex]) {
             if (userPressedTrue == mQuestionBank[mCurrentIndex].isAnswerTrue()) {
                 Toast toast = Toast.makeText(QuizActivity.this, R.string.correct_toast, Toast.LENGTH_SHORT);
                 // toast.setGravity(Gravity.TOP, 0, 0); //Ch 1 - Challenge 1

@@ -10,6 +10,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:padding="24dp" />
+
+    <!--True and False Buttons -->
     <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -25,6 +27,15 @@
                 android:layout_height="wrap_content"
                 android:text="@string/false_button" />
     </LinearLayout>
+
+    <!-- Cheat Button -->
+    <Button
+        android:id="@+id/cheat_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/cheat_button"/>
+
+    <!-- Previous and Next buttons -->
     <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
