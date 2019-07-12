@@ -23,5 +23,7 @@
     <string name="show_answer_button">Show Answer</string>
     <string name="cheat_button">Cheat!</string>
     <string name="judgment_toast">Cheating is wrong.</string>
+    <string name="out_of_cheats">You\'re out of cheats.</string>
+    <string name="cheats_remaining">Cheats remaining:</string>
 
 </resources>

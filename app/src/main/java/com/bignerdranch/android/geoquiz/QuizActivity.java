@@ -25,12 +25,15 @@ public class QuizActivity extends AppCompatActivity {
 
     private static final int REQUEST_CODE_CHEAT = 0;
 
+    private static final int ALLOWED_CHEATS = 3;
+
     private Button mTrueButton;
     private Button mFalseButton;
     private ImageButton mNextButton;
     private ImageButton mPrevButton;
     private Button mCheatButton;
     private TextView mQuestionTextView;
+    private TextView mCheatsRemaining;
 
     private Question[] mQuestionBank = new Question[]{
         new Question(R.string.question_australia, true),
@@ -62,6 +65,9 @@ public class QuizActivity extends AppCompatActivity {
             mAlreadyAnswered = savedInstanceState.getBooleanArray(KEY_ALREADY_ANSWERED);
             mCheatedOn = savedInstanceState.getBooleanArray(KEY_CHEATED_ON);
         }
+
+        mCheatsRemaining = (TextView) findViewById(R.id.cheats_remaining);
+        updateCheatsRemaining();
 
         mQuestionTextView = (TextView) findViewById(R.id.question_text_view);
         updateQuestion();
@@ -109,6 +115,7 @@ public class QuizActivity extends AppCompatActivity {
             }
         });
 
+
         mCheatButton = (Button) findViewById(R.id.cheat_button);
         mCheatButton.setOnClickListener(new View.OnClickListener(){
             @Override
@@ -116,6 +123,9 @@ public class QuizActivity extends AppCompatActivity {
                 //Start CheatActivity
                 if(mAlreadyAnswered[mCurrentIndex]){
                     Toast.makeText(QuizActivity.this, R.string.already_answered, Toast.LENGTH_SHORT).show();
+                }
+                else if(cheatsRemaining() == 0){
+                    Toast.makeText(QuizActivity.this, R.string.out_of_cheats, Toast.LENGTH_SHORT).show();
                 }
                 else {
                     boolean answerIsTrue = mQuestionBank[mCurrentIndex].isAnswerTrue();
@@ -215,7 +225,27 @@ public class QuizActivity extends AppCompatActivity {
                 mCheatedOn[mCurrentIndex] = true;           //Remember question that was cheated on
                 mAlreadyAnswered[mCurrentIndex] = true;     //Set question as answered
                 mAnsweredIncorrect ++;                      //Increment incorrect answers
+                updateCheatsRemaining();                    //Update cheats remaining
             }
         }
+    }
+
+    private int cheatsRemaining(){
+        int cheatsRemaining = ALLOWED_CHEATS;
+        for (boolean b: mCheatedOn){
+            if (b){
+                cheatsRemaining--;
+            }
+            if(cheatsRemaining == 0){
+                break;
+            }
+        }
+        return cheatsRemaining;
+    }
+
+    private void updateCheatsRemaining(){
+        int cheatsRemaining = cheatsRemaining();
+        String cheatsRemainingAlert = getText(R.string.cheats_remaining) + " " + Integer.toString(cheatsRemaining);
+        mCheatsRemaining.setText(cheatsRemainingAlert);
     }
 }

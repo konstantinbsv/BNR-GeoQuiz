@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools">
     <TextView
             android:id="@+id/question_text_view"
             android:layout_width="wrap_content"
@@ -26,13 +27,30 @@
                 android:text="@string/false_button" />
     </LinearLayout>
 
-    <!-- Cheat Button -->
-    <Button
-            android:id="@+id/cheat_button"
+    <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|center_horizontal"
-            android:text="@string/cheat_button"/>
+            android:orientation="vertical">
+
+        <!-- Cheat Button -->
+        <Button
+                android:id="@+id/cheat_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:text="@string/cheat_button"/>
+        <!-- Cheats Remaining -->
+        <TextView
+            android:id="@+id/cheats_remaining"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="sans-serif-light"
+            android:padding="12dp"
+            android:text="@string/cheats_remaining"
+            tools:text="Cheats Remaining: x"/>
+
+        </LinearLayout>
 
     <ImageButton
             android:id="@+id/prev_button"
