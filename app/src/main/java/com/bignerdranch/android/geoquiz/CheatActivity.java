@@ -1,8 +1,12 @@
 package com.bignerdranch.android.geoquiz;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.view.View;
+import android.view.ViewAnimationUtils;
 import android.widget.Button;
 import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
@@ -42,20 +46,45 @@ public class CheatActivity extends AppCompatActivity {
         //Is current answer true
         mAnswerIsTrue = getIntent().getBooleanExtra(EXTRA_ANSWER_IS_TRUE, false);
 
+        //Inflate answer button and text view
+        mShowAnswerButton = (Button) findViewById(R.id.show_answer_button);
         mAnswerTextView = (TextView) findViewById(R.id.answer_text_view);
+
+        //Check if answer already shown
         if(savedInstanceState != null){
             mIsAnswerShown = savedInstanceState.getBoolean(KEY_IS_ANS_SHOWN, false);
             if(mIsAnswerShown){
                 showAnswer();
+                mShowAnswerButton.setVisibility(View.INVISIBLE);
             }
         }
 
-        mShowAnswerButton = (Button) findViewById(R.id.show_answer_button);
+        //Set onClick Listener on Show Answer button
         mShowAnswerButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v){
                 mIsAnswerShown = true;
                 showAnswer();
+
+                //Hide button on press - Animation
+                if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    int cx = mShowAnswerButton.getWidth() / 2;
+                    int cy = mShowAnswerButton.getHeight() / 2;
+                    float radius = mShowAnswerButton.getWidth();
+                    Animator anim = ViewAnimationUtils
+                            .createCircularReveal(mShowAnswerButton, cx, cy, radius, 0);
+                    anim.addListener(new AnimatorListenerAdapter() {
+                        @Override
+                        public void onAnimationEnd(Animator animation) {
+                            super.onAnimationEnd(animation);
+                            mShowAnswerButton.setVisibility(View.INVISIBLE);
+                        }
+                    });
+                    anim.start();
+                }//If API level to old for animation, just hide the button
+                else{
+                    mShowAnswerButton.setVisibility(View.INVISIBLE);
+                }
             }
         });
 
