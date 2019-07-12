@@ -24,6 +24,7 @@ public class CheatActivity extends AppCompatActivity {
 
     private TextView mAnswerTextView;
     private Button mShowAnswerButton;
+    private TextView mAPILevelTextView;
 
     //Public Static Methods
     //Creating new intent with extra about answer
@@ -49,13 +50,17 @@ public class CheatActivity extends AppCompatActivity {
         //Inflate answer button and text view
         mShowAnswerButton = (Button) findViewById(R.id.show_answer_button);
         mAnswerTextView = (TextView) findViewById(R.id.answer_text_view);
+        mAPILevelTextView = (TextView) findViewById(R.id.api_level);
+
+        //Show API Level
+        mAPILevelTextView.setText("API Level " + Build.VERSION.SDK_INT);
 
         //Check if answer already shown
         if(savedInstanceState != null){
             mIsAnswerShown = savedInstanceState.getBoolean(KEY_IS_ANS_SHOWN, false);
             if(mIsAnswerShown){
                 showAnswer();
-                mShowAnswerButton.setVisibility(View.INVISIBLE);
+                mShowAnswerButton.setVisibility(View.INVISIBLE);    //Hide Show Answer button
             }
         }
 
@@ -87,7 +92,6 @@ public class CheatActivity extends AppCompatActivity {
                 }
             }
         });
-
     }
     private void setAnswerShownResult(boolean isAnswerShown){
         Intent data = new Intent();
